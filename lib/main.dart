@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'deliveryscreen.dart';
 import 'directionsprovider.dart';
 
@@ -40,12 +39,10 @@ class AskScreen extends StatelessWidget {
             Text(
               'Regístrate',
             ),
-
             FloatingActionButton(
               tooltip: 'increment',
               child: Icon(Icons.map),
-              onPressed: () => Navigator.push(
-                  context,
+              onPressed: () => Navigator.push(context,
                   MaterialPageRoute(builder: (context) => DeliveryScreen())),
             )
           ],
