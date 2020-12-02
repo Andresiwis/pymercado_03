@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pymercado_02/LoginScreen.dart';
 
 import 'deliveryscreen.dart';
 import 'directionsprovider.dart';
@@ -30,27 +31,7 @@ class AskScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('PYMErcado'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Iniciar sesión',
-            ),
-            Text(
-              'Regístrate',
-            ),
-
-            FloatingActionButton(
-              tooltip: 'increment',
-              child: Icon(Icons.map),
-              onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => DeliveryScreen())),
-            )
-          ],
-        ),
-      ),
+      body: LoginScreen()
     );
   }
 }
