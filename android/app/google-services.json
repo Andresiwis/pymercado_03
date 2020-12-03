@@ -1,0 +1,32 @@
+{
+    "project_info": {
+        "project_number": "450164568713",
+        "firebase_url": "https://pymercado-b5a10.firebaseio.com",
+        "project_id": "pymercado-b5a10",
+        "storage_bucket": "pymercado-b5a10.appspot.com"
+    },
+    "client": [{
+        "client_info": {
+            "mobilesdk_app_id": "1:450164568713:android:4bd2c4447bc204059e0c58",
+            "android_client_info": {
+                "package_name": "com.example.pymercado_02"
+            }
+        },
+        "oauth_client": [{
+            "client_id": "450164568713-uk7l43ubcdr7l1bk9tvcad0g04q1fq05.apps.googleusercontent.com",
+            "client_type": 3
+        }],
+        "api_key": [{
+            "current_key": "AIzaSyAExNRv81O55HsAw-ggBKnmwMHkc9aBKV0"
+        }],
+        "services": {
+            "appinvite_service": {
+                "other_platform_oauth_client": [{
+                    "client_id": "450164568713-uk7l43ubcdr7l1bk9tvcad0g04q1fq05.apps.googleusercontent.com",
+                    "client_type": 3
+                }]
+            }
+        }
+    }],
+    "configuration_version": "1"
+}

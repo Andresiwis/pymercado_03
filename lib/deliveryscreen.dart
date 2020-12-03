@@ -1,10 +1,9 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-
 import 'directionsprovider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DeliveryScreen extends StatefulWidget {
   final LatLng fromPoint = LatLng(-33.49127796658118, -70.61806703531481);
@@ -17,6 +16,10 @@ class DeliveryScreen extends StatefulWidget {
 
 class _DeliveryScreenState extends State<DeliveryScreen> {
   GoogleMapController _mapController;
+  //showData() {
+  //CollectionReference collectionReference =
+  //FirebaseFirestore.instance.collection('marcadores');
+  //}
 
   @override
   Widget build(BuildContext context) {
