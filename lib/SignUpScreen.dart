@@ -1,13 +1,14 @@
 import 'package:pymercado_02/FadeAnimation.dart';
 import 'package:flutter/material.dart';
-import 'package:pymercado_02/SignUpScreen.dart';
+import 'package:pymercado_02/LoginScreen.dart';
+import 'package:pymercado_02/main.dart';
 
-class LoginScreen extends StatefulWidget {
+class SignUpScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _SignUpScreenState createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery
@@ -15,7 +16,10 @@ class _LoginScreenState extends State<LoginScreen> {
         .size
         .width;
     return Scaffold(
-        backgroundColor: Colors.tealAccent,
+      appBar: AppBar(
+        title: Text("PYMErcado"),
+      ),
+        backgroundColor: Colors.deepPurple[200],
         body: SingleChildScrollView(
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget> [
-                        FadeAnimation(1.5, Text("Login", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25),)),
+                        FadeAnimation(1.5, Text("Sign up", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25),)),
                         SizedBox(height: 7,),
                         FadeAnimation(1.7, Container(
                             decoration: BoxDecoration(
@@ -70,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   child: TextField(
                                     decoration: InputDecoration(
                                         border: InputBorder.none,
-                                        hintText: "Username",
+                                        hintText: "e-mail",
                                         hintStyle: TextStyle(color: Colors.grey)
                                     ),
                                   ),
@@ -83,7 +87,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ))
                                   ),
                                   child: TextField(
-                                    obscureText: true,
                                     decoration: InputDecoration(
                                         border: InputBorder.none,
                                         hintText: "Password",
@@ -95,49 +98,43 @@ class _LoginScreenState extends State<LoginScreen> {
                             )
                         )),
                         SizedBox(
-                          height: 6,
+                          height: 0.5,
                         ),
-                        FadeAnimation(1.8, Center(child: Text("Forgot password?", style: TextStyle(color: Colors.black)),)),
+                        FadeAnimation(1.7, FlatButton(
+                            onPressed: () {Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => AskScreen()),
+                            );},
+                            child: Center(
+                              child: Text(
+                                  "Already have an account?",
+                                  style: TextStyle(color: Colors.black, decoration: TextDecoration.underline)),
+                            )
+                        )),
                         SizedBox(
-                          height: 16,
+                          height: 5,
                         ),
                         FadeAnimation(1.9, RaisedButton(
                           onPressed: () {},
                           padding: const EdgeInsets.all(0),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(80)
+                              borderRadius: BorderRadius.circular(80)
                           ),
                           child: Container(
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(80),
-                                color: Colors.teal[900]
+                                borderRadius: BorderRadius.circular(80),
+                                color: Colors.tealAccent
                             ),
                             padding: const EdgeInsets.all(15),
                             child: Center(
-                              child: Text("Login", style: TextStyle(color: Colors.white),),
-                          ),
+                              child: Text("Sign Up", style: TextStyle(color: Colors.black),),
+                            ),
                           ),
                         ),),
-                        SizedBox(
-                          height: 6,
-                        ),
-                      FadeAnimation(2.1, FlatButton(
-                        onPressed: () {Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => SignUpScreen()),
-                        );},
-                        child: Center(
-                        child: Text(
-                            "Create Account",
-                            style: TextStyle(color: Colors.black, decoration: TextDecoration.underline)),
-                      )
-                      ))],
+                      ],
                     ),)
                 ]
             )
         ));
   }
 }
-//decoration: BoxDecoration(
-//                               borderRadius: BorderRadius.circular(70),
-//                               color: Colors.teal[900]
