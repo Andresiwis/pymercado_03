@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pymercado_02/LoginScreen.dart';
+import 'package:pymercado_02/SignUpScreen.dart';
 
 import 'deliveryscreen.dart';
 import 'directionsprovider.dart';
