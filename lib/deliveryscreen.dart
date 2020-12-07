@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -9,17 +10,22 @@ class DeliveryScreen extends StatefulWidget {
   final LatLng fromPoint = LatLng(-33.49127796658118, -70.61806703531481);
   final LatLng toPoint = LatLng(-33.50648316186287, -70.60602013057212);
   final LatLng panaderia = LatLng(-33.499827115576544, -70.61737123904767);
-
   @override
   _DeliveryScreenState createState() => _DeliveryScreenState();
 }
 
+class Markador {
+  final String markerId;
+  final LatLng position;
+  final InfoWindow title;
+
+  Markador(this.markerId, this.position, this.title);
+}
+
 class _DeliveryScreenState extends State<DeliveryScreen> {
   GoogleMapController _mapController;
-  //showData() {
-  //CollectionReference collectionReference =
-  //FirebaseFirestore.instance.collection('marcadores');
-  //}
+  final dataBaseReference = Firestore.instance;
+  List<Markador> markadores = List();
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +33,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
       appBar: AppBar(
         title: Text('PYMErcado'),
       ),
+      drawer: Menulateral(),
       body: Consumer<DirectionProvider>(
         builder: (BuildContext context, DirectionProvider api, Widget child) {
           return GoogleMap(
@@ -34,7 +41,15 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
               target: widget.fromPoint,
               zoom: 12,
             ),
-            markers: _createMarkers(),
+            markers: markadores
+                .map(
+                  (e) => Marker(
+                    markerId: MarkerId(e.markerId),
+                    position: e.position,
+                    infoWindow: e.title,
+                  ),
+                )
+                .toSet(),
             polylines: api.currentRoute,
             onMapCreated: _onMapCreated,
             myLocationEnabled: true,
@@ -49,9 +64,27 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
     );
   }
 
+  void getData() {
+    dataBaseReference
+        .collection("marcadores")
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((f) => print('${f.data}}'));
+      //.documents
+      //.map(
+      //(snapshot) => Markador(
+      //snapshot['markerId'],
+      //LatLng(snapshot['Latitud'], snapshot['Longitud']),
+      //InfoWindow(title: snapshot['title']),
+      //),
+      //)
+      //.toList();
+      //setState(() {});
+    });
+  }
+
   Set<Marker> _createMarkers() {
     var tmp = Set<Marker>();
-
     tmp.add(
       Marker(
         markerId: MarkerId("fromPoint"),
@@ -108,5 +141,32 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
     );
     var cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 50);
     _mapController.animateCamera(cameraUpdate);
+  }
+}
+
+class Menulateral extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new Drawer(
+      child: ListView(
+        children: <Widget>[
+          new UserAccountsDrawerHeader(
+            accountName: Text(
+              "PYMErcado",
+              style: TextStyle(color: Colors.black),
+            ),
+            accountEmail: Text("pymercado@gmail.com",
+                style: TextStyle(color: Colors.black)),
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: NetworkImage(
+                        "https://i.pinimg.com/736x/33/66/3a/33663afe1341595fef614dad3305d328.jpg"))),
+          ),
+          new ListTile(
+            title: Text("Mi-Tienda"),
+          )
+        ],
+      ),
+    );
   }
 }
