@@ -1,5 +1,6 @@
 import 'package:pymercado_02/FadeAnimation.dart';
 import 'package:flutter/material.dart';
+import 'package:pymercado_02/RedirectScreen.dart';
 import 'package:pymercado_02/SignUpScreen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -102,7 +103,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 16,
                         ),
                         FadeAnimation(1.9, RaisedButton(
-                          onPressed: () {},
+                          onPressed: () {Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => RedirectScreen()),
+                          );},
                           padding: const EdgeInsets.all(0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(80)
