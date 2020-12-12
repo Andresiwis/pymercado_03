@@ -24,7 +24,6 @@ class Markador {
 
 class _DeliveryScreenState extends State<DeliveryScreen> {
   GoogleMapController _mapController;
-  final dataBaseReference = Firestore.instance;
   List<Markador> markadores = List();
 
   @override
@@ -41,15 +40,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
               target: widget.fromPoint,
               zoom: 12,
             ),
-            markers: markadores
-                .map(
-                  (e) => Marker(
-                    markerId: MarkerId(e.markerId),
-                    position: e.position,
-                    infoWindow: e.title,
-                  ),
-                )
-                .toSet(),
+            markers: _createMarkers(),
             polylines: api.currentRoute,
             onMapCreated: _onMapCreated,
             myLocationEnabled: true,
@@ -64,24 +55,6 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
     );
   }
 
-  void getData() {
-    dataBaseReference
-        .collection("marcadores")
-        .getDocuments()
-        .then((QuerySnapshot snapshot) {
-      snapshot.documents.forEach((f) => print('${f.data}}'));
-      //.documents
-      //.map(
-      //(snapshot) => Markador(
-      //snapshot['markerId'],
-      //LatLng(snapshot['Latitud'], snapshot['Longitud']),
-      //InfoWindow(title: snapshot['title']),
-      //),
-      //)
-      //.toList();
-      //setState(() {});
-    });
-  }
 
   Set<Marker> _createMarkers() {
     var tmp = Set<Marker>();

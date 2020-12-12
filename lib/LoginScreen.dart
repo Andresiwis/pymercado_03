@@ -1,5 +1,7 @@
 import 'package:pymercado_02/FadeAnimation.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:pymercado_02/RedirectScreen.dart';
 import 'package:pymercado_02/SignUpScreen.dart';
 
@@ -9,6 +11,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController _emailcontroller = TextEditingController();
+  final TextEditingController _passwordcontroller = TextEditingController();
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery
@@ -16,8 +23,11 @@ class _LoginScreenState extends State<LoginScreen> {
         .size
         .width;
     return Scaffold(
+        key: _scaffoldkey,
         backgroundColor: Colors.tealAccent,
         body: SingleChildScrollView(
+            child: Form(
+                key: _formkey,
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -68,12 +78,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                           color: Colors.grey
                                       ))
                                   ),
-                                  child: TextField(
+                                  child: TextFormField(
+                                    controller: _emailcontroller,
                                     decoration: InputDecoration(
                                         border: InputBorder.none,
                                         hintText: "Username",
                                         hintStyle: TextStyle(color: Colors.grey)
                                     ),
+                                    validator: (value) {
+                                      if (value.isEmpty)
+                                        return 'Porfavor, ingrese un email válido';
+                                      return null;
+                                    },
                                   ),
                                 ),
                                 Container(
@@ -83,13 +99,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                           color: Colors.grey
                                       ))
                                   ),
-                                  child: TextField(
+                                  child: TextFormField(
+                                    controller: _passwordcontroller,
                                     obscureText: true,
                                     decoration: InputDecoration(
                                         border: InputBorder.none,
                                         hintText: "Password",
                                         hintStyle: TextStyle(color: Colors.grey)
                                     ),
+                                    validator: (value) {
+                                      if (value.isEmpty)
+                                        return 'Porfavor, ingrese una contraseña válida';
+                                      return null;
+                                    },
                                   ),
                                 )
                               ],
@@ -103,10 +125,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 16,
                         ),
                         FadeAnimation(1.9, RaisedButton(
-                          onPressed: () {Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => RedirectScreen()),
-                          );},
+                          onPressed: () async {
+                            if (_formkey.currentState.validate()) {
+                              _signInWithEmailAndPassword();
+                            }
+                          },
                           padding: const EdgeInsets.all(0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(80)
@@ -138,10 +161,43 @@ class _LoginScreenState extends State<LoginScreen> {
                       ))],
                     ),)
                 ]
-            )
+            ))
         ));
   }
+  @override
+  void dispose() {
+    _emailcontroller.dispose();
+    _passwordcontroller.dispose();
+    super.dispose();
+  }
+
+  void _signInWithEmailAndPassword() async {
+    try {
+      final User user = (await _auth.signInWithEmailAndPassword(
+        email: _emailcontroller.text,
+        password: _passwordcontroller.text,
+      ))
+          .user;
+      if (!user.emailVerified) {
+        await user.sendEmailVerification();
+      }
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) {
+        return RedirectScreen(
+          user: user,
+        );
+      }));
+    } catch (e) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text("Failed to sign in with Email & Password"),
+      ));
+    }
+  }
+
+  void _signOut() async {
+    await _auth.signOut();
+  }
 }
+
 //decoration: BoxDecoration(
 //                               borderRadius: BorderRadius.circular(70),
 //                               color: Colors.teal[900]

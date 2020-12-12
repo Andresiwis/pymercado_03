@@ -1,6 +1,9 @@
 import 'package:pymercado_02/FadeAnimation.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:pymercado_02/LoginScreen.dart';
+import 'package:pymercado_02/RedirectScreen.dart';
 import 'package:pymercado_02/main.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -9,6 +12,11 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  TextEditingController _emailcontroller = TextEditingController();
+  TextEditingController _passwordcontroller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery
@@ -21,7 +29,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
         backgroundColor: Colors.deepPurple[200],
         body: SingleChildScrollView(
-            child: Column(
+            child: Form(
+                key: _formKey,
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
@@ -71,12 +81,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           color: Colors.grey
                                       ))
                                   ),
-                                  child: TextField(
+                                  child: TextFormField(
+                                    controller: _emailcontroller,
                                     decoration: InputDecoration(
                                         border: InputBorder.none,
                                         hintText: "e-mail",
                                         hintStyle: TextStyle(color: Colors.grey)
                                     ),
+                                    validator: (String value) {
+                                      if (value.isEmpty) {
+                                        return 'Porfavor, ingrese un email válido';
+                                      }
+                                      return null;
+                                    },
                                   ),
                                 ),
                                 Container(
@@ -86,12 +103,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           color: Colors.grey
                                       ))
                                   ),
-                                  child: TextField(
+                                  child: TextFormField(
+                                    controller: _passwordcontroller,
                                     decoration: InputDecoration(
                                         border: InputBorder.none,
                                         hintText: "Password",
                                         hintStyle: TextStyle(color: Colors.grey)
                                     ),
+                                    validator: (String value) {
+                                      if (value.isEmpty) {
+                                        return 'Porfavor, ingrese una contraseña valida';
+                                      }
+                                      return null;
+                                    },
+                                    obscureText: true,
                                   ),
                                 )
                               ],
@@ -115,7 +140,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           height: 5,
                         ),
                         FadeAnimation(1.9, RaisedButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            if (_formKey.currentState.validate()) {
+                              _registrarcuenta();
+                            }
+                          },
                           padding: const EdgeInsets.all(0),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(80)
@@ -135,6 +164,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),)
                 ]
             )
+            )
         ));
   }
+  void _registrarcuenta() async {
+    final User user = (await _auth.createUserWithEmailAndPassword(
+      email: _emailcontroller.text,
+      password: _passwordcontroller.text,
+    ))
+        .user;
+    if (user != null) {
+      if (!user.emailVerified) {
+        await user.sendEmailVerification();
+      }
+
+      final user1 = _auth.currentUser;
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => RedirectScreen(
+            user: user1,
+          )));
+    }
+  }
 }
+
+
