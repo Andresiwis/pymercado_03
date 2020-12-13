@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-
 import 'package:pymercado_02/LoginScreen.dart';
 import 'directionsprovider.dart';
 
@@ -32,10 +31,9 @@ class AskScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('PYMErcado'),
-      ),
-      body: LoginScreen()
-    );
+        appBar: AppBar(
+          title: Text('PYMErcado'),
+        ),
+        body: LoginScreen());
   }
 }
