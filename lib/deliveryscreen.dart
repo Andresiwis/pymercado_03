@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -17,14 +18,14 @@ class DeliveryScreen extends StatefulWidget {
 class Markador {
   final String markerId;
   final LatLng position;
-  final InfoWindow title;
-
+  final String title;
   Markador(this.markerId, this.position, this.title);
 }
 
 class _DeliveryScreenState extends State<DeliveryScreen> {
   GoogleMapController _mapController;
   List<Markador> markadores = List();
+  List<Marker> data = List();
 
   @override
   Widget build(BuildContext context) {
@@ -50,13 +51,29 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.zoom_out_map),
-        onPressed: _centerView,
+        onPressed: _centerView(),
       ),
     );
   }
 
+  Set<Marker> getData() {
+    var tmp = Set<Marker>();
+    FirebaseFirestore.instance
+        .collection('marcadores')
+        .get()
+        .then((QuerySnapshot snapshot) => {
+              snapshot.docs.forEach((doc) {
+                tmp.add(Marker(
+                  markerId: MarkerId(doc['markerId']),
+                  position: doc['location'],
+                  infoWindow: InfoWindow(title: doc['title']),
+                ));
+              })
+            });
+    return tmp;
+  }
 
-  Set<Marker> _createMarkers() {
+  _createMarkers() {
     var tmp = Set<Marker>();
     tmp.add(
       Marker(
@@ -135,11 +152,71 @@ class Menulateral extends StatelessWidget {
                     image: NetworkImage(
                         "https://i.pinimg.com/736x/33/66/3a/33663afe1341595fef614dad3305d328.jpg"))),
           ),
-          new ListTile(
-            title: Text("Mi-Tienda"),
-          )
+          Ink(
+            color: Colors.purple,
+            child: new ListTile(
+              title: Text("Mi-Tienda"),
+              onTap: () {
+                //pantalla de la tienda
+              },
+            ),
+          ),
+          Ink(
+            color: Colors.purple,
+            child: new ListTile(
+              title: Text("Chats"),
+              onTap: () {
+                //pantalla de chats
+              },
+            ),
+          ),
         ],
       ),
+    );
+  }
+}
+
+class DataSearch extends SearchDelegate<String> {
+  final tiendas = [];
+  final tiendasrecientes = [];
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+          icon: Icon(Icons.clear),
+          onPressed: () {
+            query = "";
+          })
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+        icon: AnimatedIcon(
+            icon: AnimatedIcons.arrow_menu, progress: transitionAnimation),
+        onPressed: () {
+          close(context, null);
+        });
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    // TODO: implement buildResults
+    throw UnimplementedError();
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final suggestionList = query.isEmpty
+        ? tiendasrecientes
+        : tiendas.where((p) => p.starstsWith(query)).toList();
+    return ListView.builder(
+      itemBuilder: (context, index) => ListTile(
+        leading: Icon(Icons.location_city),
+        title: Text(suggestionList[index]),
+      ),
+      itemCount: suggestionList.length,
     );
   }
 }
