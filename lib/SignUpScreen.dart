@@ -65,7 +65,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget> [
-                        FadeAnimation(1.5, Text("Sign up", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25),)),
+                        FadeAnimation(1.5, Text("Registro", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25),)),
                         SizedBox(height: 7,),
                         FadeAnimation(1.7, Container(
                             decoration: BoxDecoration(
@@ -85,7 +85,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     controller: _emailcontroller,
                                     decoration: InputDecoration(
                                         border: InputBorder.none,
-                                        hintText: "e-mail",
+                                        hintText: "Email",
                                         hintStyle: TextStyle(color: Colors.grey)
                                     ),
                                     validator: (String value) {
@@ -107,7 +107,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     controller: _passwordcontroller,
                                     decoration: InputDecoration(
                                         border: InputBorder.none,
-                                        hintText: "Password",
+                                        hintText: "Contraseña",
                                         hintStyle: TextStyle(color: Colors.grey)
                                     ),
                                     validator: (String value) {
@@ -132,7 +132,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             );},
                             child: Center(
                               child: Text(
-                                  "Already have an account?",
+                                  "Ya tienes una cuenta?",
                                   style: TextStyle(color: Colors.black, decoration: TextDecoration.underline)),
                             )
                         )),
@@ -156,7 +156,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             padding: const EdgeInsets.all(15),
                             child: Center(
-                              child: Text("Sign Up", style: TextStyle(color: Colors.black),),
+                              child: Text("Crear cuenta", style: TextStyle(color: Colors.black),),
                             ),
                           ),
                         ),),
