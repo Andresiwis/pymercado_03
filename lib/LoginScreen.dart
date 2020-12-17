@@ -82,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     controller: _emailcontroller,
                                     decoration: InputDecoration(
                                         border: InputBorder.none,
-                                        hintText: "Username",
+                                        hintText: "Email",
                                         hintStyle: TextStyle(color: Colors.grey)
                                     ),
                                     validator: (value) {
@@ -104,12 +104,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     obscureText: true,
                                     decoration: InputDecoration(
                                         border: InputBorder.none,
-                                        hintText: "Password",
+                                        hintText: "Contraseña",
                                         hintStyle: TextStyle(color: Colors.grey)
                                     ),
                                     validator: (value) {
                                       if (value.isEmpty)
-                                        return 'Porfavor, ingrese una contraseña válida';
+                                        return 'Por favor, ingrese una contraseña válida';
                                       return null;
                                     },
                                   ),
@@ -141,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             padding: const EdgeInsets.all(15),
                             child: Center(
-                              child: Text("Login", style: TextStyle(color: Colors.white),),
+                              child: Text("Iniciar sesión", style: TextStyle(color: Colors.white),),
                           ),
                           ),
                         ),),
@@ -155,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         );},
                         child: Center(
                         child: Text(
-                            "Create Account",
+                            "Crear cuenta",
                             style: TextStyle(color: Colors.black, decoration: TextDecoration.underline)),
                       )
                       ))],

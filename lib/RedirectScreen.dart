@@ -1,3 +1,4 @@
+import 'package:pymercado_02/CreateShop.dart';
 import 'package:pymercado_02/FadeAnimation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -33,7 +34,7 @@ class _RedirectScreenState extends State<RedirectScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               FadeAnimation(1.2, ElevatedButton.icon(
-                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => DeliveryScreen()),);},
+                onPressed: () {getData(); Navigator.push(context, MaterialPageRoute(builder: (context) => DeliveryScreen()),);},
                 label: Text("Ir al Mapa"),
                 icon: Icon(Icons.map),
                 style: ElevatedButton.styleFrom(
@@ -82,4 +83,16 @@ class _RedirectScreenState extends State<RedirectScreen> {
       setState(() {});
     });
   }
+  void getData() {
+    FirebaseFirestore.instance
+        .collection('marcadores')
+        .get()
+        .then((QuerySnapshot snapshot) => {
+      snapshot.docs.forEach((doc) {
+        print(doc['markerId']);
+      })
+    });
+  }
+
+
 }
