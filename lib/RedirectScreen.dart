@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'package:pymercado_02/main.dart';
 import 'package:pymercado_02/deliveryscreen.dart';
+import 'package:pymercado_02/CreateShop.dart';
 
 class RedirectScreen extends StatefulWidget {
   final User user;
@@ -42,7 +43,7 @@ class _RedirectScreenState extends State<RedirectScreen> {
                 )
         )),
               FadeAnimation(1.4, ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => CreateShop()),);},
                   label: Text("Crea tu Tienda"),
                   icon: Icon(Icons.person),
                   style: ElevatedButton.styleFrom(
