@@ -14,17 +14,37 @@ class DeliveryScreen extends StatefulWidget {
   _DeliveryScreenState createState() => _DeliveryScreenState();
 }
 
-class Markador {
-  final String markerId;
-  final LatLng position;
-  final String title;
-  Markador(this.markerId, this.position, this.title);
-}
-
 class _DeliveryScreenState extends State<DeliveryScreen> {
   GoogleMapController _mapController;
-  List<Markador> markadores = List();
-  List<Marker> data = List();
+  Map<MarkerId, Marker> markadores = <MarkerId, Marker>{};
+
+  void initMarker(specify) async {
+    var markerIdval = specify['markerId'];
+    final MarkerId markerId = MarkerId(markerIdval);
+    final Marker marker = Marker(
+        markerId: markerId,
+        position:
+            LatLng(specify['location'].latitude, specify['location'].longitude),
+        infoWindow: InfoWindow(title: specify['title']));
+    setState(() {
+      markadores[markerId] = marker;
+    });
+  }
+
+  getMarkers() async {
+    FirebaseFirestore.instance.collection('tiendas').get().then((e) {
+      if (e.docs.isNotEmpty) {
+        for (int i = 0; i < e.docs.length; i++) {
+          initMarker(e.docs[i].data());
+        }
+      }
+    });
+  }
+
+  void iniState() {
+    getMarkers();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +60,8 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
               target: widget.fromPoint,
               zoom: 12,
             ),
-            markers: _createMarkers(),
-            polylines: api.currentRoute,
+            markers: Set<Marker>.of(markadores.values),
+            //polylines: api.currentRoute,
             onMapCreated: _onMapCreated,
             myLocationEnabled: true,
             myLocationButtonEnabled: true,
@@ -55,21 +75,15 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
     );
   }
 
-  Set<Marker> getData() {
-    var tmp = Set<Marker>();
+  void getData() {
     FirebaseFirestore.instance
-        .collection('marcadores')
+        .collection('tiendas')
         .get()
         .then((QuerySnapshot snapshot) => {
               snapshot.docs.forEach((doc) {
-                tmp.add(Marker(
-                  markerId: MarkerId(doc['markerId']),
-                  position: doc['location'],
-                  infoWindow: InfoWindow(title: doc['title']),
-                ));
+                print(doc['markerId']);
               })
             });
-    return tmp;
   }
 
   _createMarkers() {
@@ -100,7 +114,6 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
 
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
-
     _centerView();
   }
 
