@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:core';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:provider/provider.dart';
-import 'package:google_maps_webservice/geolocation.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 //CreateShop
 class CreateShop extends StatefulWidget {
@@ -15,8 +14,8 @@ class CreateShop extends StatefulWidget {
   }
 }
 
-
 class CreateShopState extends State<CreateShop> {
+  FirebaseAuth _auth = FirebaseAuth.instance;
   String _shopname;
   String _direction;
   String _phoneNumber;
@@ -24,19 +23,27 @@ class CreateShopState extends State<CreateShop> {
   String _category;
   String _latitud;
   String _longitud;
+  String _uid;
+
+  void getCurrentUser() async {
+    User user = _auth.currentUser;
+    final uid = user.uid;
+    print(uid);
+    setState(() {
+      _uid = uid;
+    });
+  }
 
   void _getCurrentLocation() async {
-
-    final position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    final position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     print(position);
 
     setState(() {
       _latitud = "${position.latitude}";
       _longitud = "${position.longitude}";
     });
-
   }
-
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -79,7 +86,6 @@ class CreateShopState extends State<CreateShop> {
     );
   }
 
-
   Widget _buildPhoneNumber() {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Número de teléfono'),
@@ -113,6 +119,7 @@ class CreateShopState extends State<CreateShop> {
       },
     );
   }
+
   Widget _buildCategory() {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Categoría de la tienda'),
@@ -145,7 +152,11 @@ class CreateShopState extends State<CreateShop> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Padding(padding: EdgeInsets.all(10)),
-              Text("Crea tu propia tienda", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 33)),
+              Text("Crea tu propia tienda",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 33)),
               SizedBox(
                 height: 20,
               ),
@@ -156,43 +167,53 @@ class CreateShopState extends State<CreateShop> {
               _buildCategory(),
               SizedBox(height: 70),
               RaisedButton(
-                onPressed: ()  {
+                onPressed: () {
                   if (!_formKey.currentState.validate()) {
                     return;
                   }
 
-
                   _formKey.currentState.save();
+                  getCurrentUser();
 
                   _getCurrentLocation();
 
                   print(_longitud);
 
-                  Map<String,dynamic>ejemplo={"Nombre": _shopname, "Descripcion": _description, "latitud": _latitud, "longitud": _longitud, "markerId": _shopname, "title": _shopname, "numero": _phoneNumber, "categoria": _category};
-                  CollectionReference collection=FirebaseFirestore.instance.collection("tiendas");
-                  collection.add(ejemplo);
+                  Map<String, dynamic> ejemplo = {
+                    "Nombre": _shopname,
+                    "Descripcion": _description,
+                    "latitud": _latitud,
+                    "longitud": _longitud,
+                    "markerId": _shopname,
+                    "title": _shopname,
+                    "numero": _phoneNumber,
+                    "categoria": _category
+                  };
+                  CollectionReference collection =
+                      FirebaseFirestore.instance.collection("tiendas");
+                  collection.doc(_uid).set(ejemplo);
 
                   print(_shopname);
                   print(_direction);
                   print(_phoneNumber);
                   print(_description);
                   print(_category);
-
-                      },
-                  padding: const EdgeInsets.all(0),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(80)
-                      ),
+                },
+                padding: const EdgeInsets.all(0),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(80)),
                 child: Container(
-                        decoration: BoxDecoration(
-                           borderRadius: BorderRadius.circular(80),
-                           color: Colors.teal[900]
-                        ),
-                        padding: const EdgeInsets.all(20),
-                          child: Center(
-                              child: Text("Crear tienda", style: TextStyle(color: Colors.white, fontSize: 18), ),
-                         ),
-                       ),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(80),
+                      color: Colors.teal[900]),
+                  padding: const EdgeInsets.all(20),
+                  child: Center(
+                    child: Text(
+                      "Crear tienda",
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                  ),
+                ),
               )
             ],
           ),
