@@ -1,5 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:core';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'package:google_maps_webservice/geolocation.dart';
+import 'package:geolocator/geolocator.dart';
 
 //CreateShop
 class CreateShop extends StatefulWidget {
@@ -9,11 +15,27 @@ class CreateShop extends StatefulWidget {
   }
 }
 
+
 class CreateShopState extends State<CreateShop> {
   String _shopname;
   String _direction;
   String _phoneNumber;
   String _description;
+  String _category;
+  String _latitud;
+  String _longitud;
+
+  void _getCurrentLocation() async {
+
+    final position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    print(position);
+
+    setState(() {
+      _latitud = "${position.latitude}";
+      _longitud = "${position.longitude}";
+    });
+
+  }
 
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -91,6 +113,22 @@ class CreateShopState extends State<CreateShop> {
       },
     );
   }
+  Widget _buildCategory() {
+    return TextFormField(
+      decoration: InputDecoration(labelText: 'Categoría de la tienda'),
+      maxLength: 20,
+      validator: (String value) {
+        if (value.isEmpty) {
+          return 'Categoría de la tienda es requerido';
+        }
+
+        return null;
+      },
+      onSaved: (String value) {
+        _category = value;
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,19 +153,30 @@ class CreateShopState extends State<CreateShop> {
               _buildDirection(),
               _buildPhoneNumber(),
               _buildDescription(),
+              _buildCategory(),
               SizedBox(height: 70),
               RaisedButton(
-                onPressed: () {
+                onPressed: ()  {
                   if (!_formKey.currentState.validate()) {
                     return;
                   }
 
+
                   _formKey.currentState.save();
+
+                  _getCurrentLocation();
+
+                  print(_longitud);
+
+                  Map<String,dynamic>ejemplo={"Nombre": _shopname, "Descripcion": _description, "latitud": _latitud, "longitud": _longitud, "markerId": _shopname, "title": _shopname, "numero": _phoneNumber, "categoria": _category};
+                  CollectionReference collection=FirebaseFirestore.instance.collection("tiendas");
+                  collection.add(ejemplo);
 
                   print(_shopname);
                   print(_direction);
                   print(_phoneNumber);
                   print(_description);
+                  print(_category);
 
                       },
                   padding: const EdgeInsets.all(0),
@@ -152,20 +201,3 @@ class CreateShopState extends State<CreateShop> {
     );
   }
 }
-//RaisedButton(
-//                       onPressed: () {},
-//                       padding: const EdgeInsets.all(0),
-//                       shape: RoundedRectangleBorder(
-//                           borderRadius: BorderRadius.circular(80)
-//                       ),
-//                       child: Container(
-//                         decoration: BoxDecoration(
-//                             borderRadius: BorderRadius.circular(80),
-//                             color: Colors.teal[900]
-//                         ),
-//                         padding: const EdgeInsets.all(20),
-//                         child: Center(
-//                           child: Text("Crear tienda", style: TextStyle(color: Colors.white),),
-//                         ),
-//                       ),
-//                     ),

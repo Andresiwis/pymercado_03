@@ -7,7 +7,6 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'package:pymercado_02/main.dart';
 import 'package:pymercado_02/deliveryscreen.dart';
-import 'package:pymercado_02/CreateShop.dart';
 
 class RedirectScreen extends StatefulWidget {
   final User user;

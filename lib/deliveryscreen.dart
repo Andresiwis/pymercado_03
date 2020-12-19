@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -51,7 +50,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.zoom_out_map),
-        onPressed: _centerView(),
+        onPressed: _centerView,
       ),
     );
   }

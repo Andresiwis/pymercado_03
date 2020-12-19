@@ -35,6 +35,8 @@ dependencies:
   firebase_auth: ^0.18.4
   firebase_core: ^0.5.3
   cloud_firestore: ^0.14.4
+  location: ^3.0.2
+  geolocator: ^5.1.5
 
 
 dev_dependencies:
