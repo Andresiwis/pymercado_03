@@ -51,6 +51,13 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('PYMErcado'),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                showSearch(context: context, delegate: DataSearch());
+              })
+        ],
       ),
       drawer: Menulateral(),
       body: Consumer<DirectionProvider>(
@@ -189,8 +196,11 @@ class Menulateral extends StatelessWidget {
 }
 
 class DataSearch extends SearchDelegate<String> {
-  final tiendas = [];
-  final tiendasrecientes = [];
+  final tiendas = ["Pizzas", "Sushi", "Ropa", "Globos", "Botilleria", "Papas"];
+  final tiendasrecientes = [
+    "Pizzas",
+    "Papas",
+  ];
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -206,7 +216,7 @@ class DataSearch extends SearchDelegate<String> {
   Widget buildLeading(BuildContext context) {
     return IconButton(
         icon: AnimatedIcon(
-            icon: AnimatedIcons.arrow_menu, progress: transitionAnimation),
+            icon: AnimatedIcons.menu_arrow, progress: transitionAnimation),
         onPressed: () {
           close(context, null);
         });
@@ -214,19 +224,38 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
-    throw UnimplementedError();
+    return Container(
+      height: 100.0,
+      width: 100.0,
+      child: Card(
+        color: Colors.red,
+        child: Center(child: Text(query)),
+      ),
+    );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     final suggestionList = query.isEmpty
         ? tiendasrecientes
-        : tiendas.where((p) => p.starstsWith(query)).toList();
+        : tiendas.where((e) => e.startsWith(query)).toList();
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
-        leading: Icon(Icons.location_city),
-        title: Text(suggestionList[index]),
+        onTap: () {
+          showResults(context);
+        },
+        leading: Icon(Icons.store),
+        title: RichText(
+          text: TextSpan(
+              text: suggestionList[index].substring(0, query.length),
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              children: [
+                TextSpan(
+                    text: suggestionList[index].substring(query.length),
+                    style: TextStyle(color: Colors.grey))
+              ]),
+        ),
       ),
       itemCount: suggestionList.length,
     );
