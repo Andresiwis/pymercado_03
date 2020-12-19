@@ -15,6 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       builder: (_) => DirectionProvider(),
+      create: (BuildContext context) {},
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'PYMErcado',
