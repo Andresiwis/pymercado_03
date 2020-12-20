@@ -178,7 +178,8 @@ class Menulateral extends StatelessWidget {
             child: new ListTile(
               title: Text("Mi-Tienda"),
               onTap: () {
-                //pantalla de la tienda
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => Profile()));
               },
             ),
           ),

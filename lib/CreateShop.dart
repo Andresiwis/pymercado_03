@@ -187,7 +187,8 @@ class CreateShopState extends State<CreateShop> {
                     "markerId": _shopname,
                     "title": _shopname,
                     "numero": _phoneNumber,
-                    "categoria": _category
+                    "categoria": _category,
+                    "ubicacion": _direction
                   };
                   CollectionReference collection =
                       FirebaseFirestore.instance.collection("tiendas");
