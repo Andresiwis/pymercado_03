@@ -21,11 +21,12 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
 
   void initMarker(specify) async {
     var markerIdval = specify['markerId'];
+    var latitude = double.parse(specify['latitud']);
+    var longitude = double.parse(specify['longitud']);
     final MarkerId markerId = MarkerId(markerIdval);
     final Marker marker = Marker(
         markerId: markerId,
-        position:
-            LatLng(specify['location'].latitude, specify['location'].longitude),
+        position: LatLng(latitude, longitude),
         infoWindow: InfoWindow(title: specify['title']));
     setState(() {
       markadores[markerId] = marker;
@@ -78,7 +79,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.zoom_out_map),
-        onPressed: _centerView,
+        onPressed: getMarkers,
       ),
     );
   }
