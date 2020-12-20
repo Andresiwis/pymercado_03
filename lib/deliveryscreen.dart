@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'directionsprovider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:pymercado_02/profile.dart';
 
 class DeliveryScreen extends StatefulWidget {
   final LatLng fromPoint = LatLng(-33.49127796658118, -70.61806703531481);
@@ -224,14 +225,7 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    return Container(
-      height: 100.0,
-      width: 100.0,
-      child: Card(
-        color: Colors.red,
-        child: Center(child: Text(query)),
-      ),
-    );
+    return Profile();
   }
 
   @override

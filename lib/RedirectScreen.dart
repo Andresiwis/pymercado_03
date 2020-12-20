@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-
 import 'package:pymercado_02/main.dart';
 import 'package:pymercado_02/deliveryscreen.dart';
 
@@ -29,47 +28,59 @@ class _RedirectScreenState extends State<RedirectScreen> {
       ),
       backgroundColor: Colors.tealAccent,
       body: Center(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              FadeAnimation(1.2, ElevatedButton.icon(
-                onPressed: () {getData(); Navigator.push(context, MaterialPageRoute(builder: (context) => DeliveryScreen()),);},
-                label: Text("Ir al Mapa"),
-                icon: Icon(Icons.map),
-                style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                  primary: Colors.deepPurple,
-                  textStyle: TextStyle(color: Colors.white)
-                )
-        )),
-              FadeAnimation(1.4, ElevatedButton.icon(
-                  onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => CreateShop()),);},
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <
+            Widget>[
+          FadeAnimation(
+              1.2,
+              ElevatedButton.icon(
+                  onPressed: () {
+                    getData();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => DeliveryScreen()),
+                    );
+                  },
+                  label: Text("Ir al Mapa"),
+                  icon: Icon(Icons.map),
+                  style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      primary: Colors.deepPurple,
+                      textStyle: TextStyle(color: Colors.white)))),
+          FadeAnimation(
+              1.4,
+              ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CreateShop()),
+                    );
+                  },
                   label: Text("Crea tu Tienda"),
                   icon: Icon(Icons.person),
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
                       primary: Colors.deepPurple,
-                      textStyle: TextStyle(color: Colors.white))
-              )),
-              FadeAnimation(1.6, ElevatedButton.icon(
-                    onPressed: () {
-                      _signOut().whenComplete(() {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => AskScreen()));
-                      });
-                    },
-                    label: Text("Salir"),
-                    icon: Icon(Icons.exit_to_app_outlined),
-                    style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    primary: Colors.deepPurple,
-                    textStyle: TextStyle(color: Colors.white))
-              ))
-            ]
-        ),
+                      textStyle: TextStyle(color: Colors.white)))),
+          FadeAnimation(
+              1.6,
+              ElevatedButton.icon(
+                  onPressed: () {
+                    _signOut().whenComplete(() {
+                      Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (context) => AskScreen()));
+                    });
+                  },
+                  label: Text("Salir"),
+                  icon: Icon(Icons.exit_to_app_outlined),
+                  style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      primary: Colors.deepPurple,
+                      textStyle: TextStyle(color: Colors.white))))
+        ]),
       ),
     );
   }
+
   Future _signOut() async {
     await _auth.signOut();
   }
@@ -82,16 +93,15 @@ class _RedirectScreenState extends State<RedirectScreen> {
       setState(() {});
     });
   }
+
   void getData() {
     FirebaseFirestore.instance
         .collection('marcadores')
         .get()
         .then((QuerySnapshot snapshot) => {
-      snapshot.docs.forEach((doc) {
-        print(doc['markerId']);
-      })
-    });
+              snapshot.docs.forEach((doc) {
+                print(doc['markerId']);
+              })
+            });
   }
-
-
 }
