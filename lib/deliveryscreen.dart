@@ -95,7 +95,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.zoom_out_map),
+        child: Icon(Icons.refresh_outlined),
         onPressed: getMarkers,
       ),
     );
