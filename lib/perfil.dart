@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'globals.dart' as globals;
 
-class Profile extends StatefulWidget {
+class Perfil extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return ProfileState();
+    return PerfilState();
   }
 }
 
-class ProfileState extends State<Profile> {
+class PerfilState extends State<Perfil> {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  String _uid;
   Map data;
   String _nombre;
   String _categoria;
@@ -18,10 +19,18 @@ class ProfileState extends State<Profile> {
   String _telefono;
   String _descripcion;
 
+  void getCurrentUser() async {
+    User user = _auth.currentUser;
+    final uid = user.uid;
+    print(uid);
+    setState(() {
+      _uid = uid;
+    });
+  }
+
   getData() {
-    DocumentReference documentReference = FirebaseFirestore.instance
-        .collection("tiendas")
-        .doc(globals.id[globals.indice].trim());
+    DocumentReference documentReference =
+        FirebaseFirestore.instance.collection("tiendas").doc(_uid);
     documentReference.snapshots().listen((event) {
       setState(() {
         data = event.data();
@@ -114,6 +123,7 @@ class ProfileState extends State<Profile> {
                     ),
                   ),
                   onPressed: () {
+                    getCurrentUser();
                     getData();
                   }),
             ),

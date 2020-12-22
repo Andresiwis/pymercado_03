@@ -184,7 +184,7 @@ class CreateShopState extends State<CreateShop> {
                     "Descripcion": _description,
                     "latitud": _latitud,
                     "longitud": _longitud,
-                    "markerId": _shopname,
+                    "markerId": _uid,
                     "title": _shopname,
                     "numero": _phoneNumber,
                     "categoria": _category,

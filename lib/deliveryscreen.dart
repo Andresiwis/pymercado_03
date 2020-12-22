@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -6,11 +5,14 @@ import 'package:provider/provider.dart';
 import 'directionsprovider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pymercado_02/profile.dart';
+import 'perfil.dart';
+import 'globals.dart' as globals;
 
 class DeliveryScreen extends StatefulWidget {
   final LatLng fromPoint = LatLng(-33.49127796658118, -70.61806703531481);
   final LatLng toPoint = LatLng(-33.50648316186287, -70.60602013057212);
   final LatLng panaderia = LatLng(-33.499827115576544, -70.61737123904767);
+
   @override
   _DeliveryScreenState createState() => _DeliveryScreenState();
 }
@@ -34,13 +36,28 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
   }
 
   getMarkers() async {
-    FirebaseFirestore.instance.collection('tiendas').get().then((e) {
-      if (e.docs.isNotEmpty) {
-        for (int i = 0; i < e.docs.length; i++) {
-          initMarker(e.docs[i].data());
+    FirebaseFirestore.instance
+        .collection('tiendas')
+        .get()
+        .then((querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        print(doc['Nombre']);
+        if (!globals.t.contains(doc['Nombre'])) {
+          globals.t.add(doc['Nombre']);
+          globals.id.add(doc['markerId']);
         }
-      }
+      });
+
+      /*if (e.docs.isNotEmpty) {
+        for (int i = 0; i < e.docs.length; i++) {
+          t.add(e.docs[i].data()['Nombre']);
+          id.add(e.docs[i].data()['markerId']);
+        }
+      }*/
     });
+    print('Fuera');
+    print(globals.t);
+    print(globals.id);
   }
 
   void iniState() {
@@ -82,17 +99,6 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
         onPressed: getMarkers,
       ),
     );
-  }
-
-  void getData() {
-    FirebaseFirestore.instance
-        .collection('tiendas')
-        .get()
-        .then((QuerySnapshot snapshot) => {
-              snapshot.docs.forEach((doc) {
-                print(doc['markerId']);
-              })
-            });
   }
 
   _createMarkers() {
@@ -179,7 +185,7 @@ class Menulateral extends StatelessWidget {
               title: Text("Mi-Tienda"),
               onTap: () {
                 Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => Profile()));
+                    MaterialPageRoute(builder: (context) => Perfil()));
               },
             ),
           ),
@@ -188,7 +194,7 @@ class Menulateral extends StatelessWidget {
             child: new ListTile(
               title: Text("Chats"),
               onTap: () {
-                //pantalla de chats
+                //nada
               },
             ),
           ),
@@ -199,11 +205,7 @@ class Menulateral extends StatelessWidget {
 }
 
 class DataSearch extends SearchDelegate<String> {
-  final tiendas = ["Pizzas", "Sushi", "Ropa", "Globos", "Botilleria", "Papas"];
-  final tiendasrecientes = [
-    "Pizzas",
-    "Papas",
-  ];
+  final tiendasrecientes = [];
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -227,6 +229,7 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
+    //globals.
     return Profile();
   }
 
@@ -234,25 +237,32 @@ class DataSearch extends SearchDelegate<String> {
   Widget buildSuggestions(BuildContext context) {
     final suggestionList = query.isEmpty
         ? tiendasrecientes
-        : tiendas.where((e) => e.startsWith(query)).toList();
+        : globals.t.where((e) => e.startsWith(query)).toList();
     return ListView.builder(
-      itemBuilder: (context, index) => ListTile(
-        onTap: () {
-          showResults(context);
-        },
-        leading: Icon(Icons.store),
-        title: RichText(
-          text: TextSpan(
-              text: suggestionList[index].substring(0, query.length),
-              style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-              children: [
-                TextSpan(
-                    text: suggestionList[index].substring(query.length),
-                    style: TextStyle(color: Colors.grey))
-              ]),
-        ),
-      ),
+      itemBuilder: (context, index) {
+        return ListTile(
+          onTap: () {
+            showResults(context);
+            print('Funciona');
+            globals.indice = globals.t.indexOf(suggestionList[index]);
+            print(suggestionList[index]);
+            print(globals.indice);
+            print(globals.id[globals.indice]);
+          },
+          leading: Icon(Icons.store),
+          title: RichText(
+            text: TextSpan(
+                text: suggestionList[index].substring(0, query.length),
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                children: [
+                  TextSpan(
+                      text: suggestionList[index].substring(query.length),
+                      style: TextStyle(color: Colors.grey))
+                ]),
+          ),
+        );
+      },
       itemCount: suggestionList.length,
     );
   }
