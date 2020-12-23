@@ -44,13 +44,13 @@ class _ChatState extends State<Chat> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.tealAccent[400],
       appBar: AppBar(
         title: Text("PYMErcado"),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.close),
             onPressed: () {
-              _auth.signOut();
               Navigator.push(context, MaterialPageRoute(builder: (context) => DeliveryScreen()));
             },
           )
@@ -153,7 +153,7 @@ class Message extends StatelessWidget {
             from,
           ),
           Material(
-            color: me ? Colors.teal : Colors.red,
+            color: me ? Colors.purpleAccent : Colors.red,
             borderRadius: BorderRadius.circular(10.0),
             elevation: 6.0,
             child: Container(
