@@ -21,8 +21,8 @@ class CreateShopState extends State<CreateShop> {
   String _phoneNumber;
   String _description;
   String _category;
-  String _latitud;
-  String _longitud;
+  double _latitud;
+  double _longitud;
   String _uid;
 
   void getCurrentUser() async {
@@ -40,8 +40,8 @@ class CreateShopState extends State<CreateShop> {
     print(position);
 
     setState(() {
-      _latitud = "${position.latitude}";
-      _longitud = "${position.longitude}";
+      _latitud = double.parse("${position.latitude}");
+      _longitud = double.parse("${position.longitude}");
     });
   }
 
