@@ -1,4 +1,4 @@
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,7 +10,7 @@ import 'package:pymercado_02/globals.dart' as globals;
 class Chat extends StatefulWidget {
   static const String id = "CHAT";
   // ignore: deprecated_member_use
-  final FirebaseUser user;
+  final User user;
 
   const Chat({Key key, this.user}) : super(key: key);
   @override
@@ -77,7 +77,9 @@ class _ChatState extends State<Chat> {
 
                   List<Widget> messages = docs
                       .map((doc) => Message(
-
+                    from: doc.data()['from'],
+                    text: doc.data()['text'],
+                    me: widget.user.email == doc.data()['from'],
                     ))
                       .toList();
 
