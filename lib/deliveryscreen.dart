@@ -8,34 +8,87 @@ import 'package:pymercado_02/profile.dart';
 import 'perfil.dart';
 import 'globals.dart' as globals;
 
-class DeliveryScreen extends StatefulWidget {
-  final LatLng fromPoint = LatLng(-33.49127796658118, -70.61806703531481);
-  final LatLng toPoint = LatLng(-33.50648316186287, -70.60602013057212);
-  final LatLng panaderia = LatLng(-33.499827115576544, -70.61737123904767);
-
+class DeliveryScreen extends StatelessWidget {
   @override
-  _DeliveryScreenState createState() => _DeliveryScreenState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.deepPurple,
+      ),
+      debugShowCheckedModeBanner: false,
+      home: MyDeliveryScreen(),
+    );
+  }
 }
 
-class _DeliveryScreenState extends State<DeliveryScreen> {
-  GoogleMapController _mapController;
-  Map<MarkerId, Marker> markadores = <MarkerId, Marker>{};
+class MyDeliveryScreen extends StatefulWidget {
+  @override
+  _MyDeliveryScreenState createState() => _MyDeliveryScreenState();
+}
 
-  void initMarker(specify) async {
-    var markerIdval = specify['markerId'];
-    var latitude = double.parse(specify['latitud']);
-    var longitude = double.parse(specify['longitud']);
-    final MarkerId markerId = MarkerId(markerIdval);
-    final Marker marker = Marker(
-        markerId: markerId,
-        position: LatLng(latitude, longitude),
-        infoWindow: InfoWindow(title: specify['title']));
-    setState(() {
-      markadores[markerId] = marker;
+class Tiendas {
+  String nombre;
+  String descripcion;
+  String ubicacion;
+  double latitud;
+  double longitud;
+  LatLng cordenadas;
+
+  Tiendas({
+    this.nombre,
+    this.descripcion,
+    this.latitud,
+    this.longitud,
+    this.cordenadas,
+    this.ubicacion,
+  });
+}
+
+List<Tiendas> tiendas = [];
+
+marcadores() {
+  FirebaseFirestore.instance.collection('tiendas').get().then((querySnapshot) {
+    querySnapshot.docs.forEach((doc) {
+      tiendas.add(Tiendas(
+        nombre: doc.data()['Nombre'],
+        descripcion: doc.data()['Descripcion'],
+        latitud: doc.data()['latitud'],
+        longitud: doc.data()['longitud'],
+        cordenadas: LatLng(doc.data()['latitud'], doc.data()['longitud']),
+        ubicacion: doc.data()['ubicacion'],
+      ));
+      print('ciclo funcionando');
+    });
+    print(tiendas);
+    return tiendas;
+  });
+}
+
+class _MyDeliveryScreenState extends State<MyDeliveryScreen> {
+  List<Marker> allMarkers = [];
+  GoogleMapController _mapController;
+
+  @override
+  void initState() {
+    print('Aqui');
+    marcadores();
+    getTiendas();
+    print('aqui');
+    print(tiendas);
+    super.initState();
+    tiendas.forEach((element) {
+      allMarkers.add(Marker(
+          markerId: MarkerId(element.nombre),
+          draggable: false,
+          infoWindow: InfoWindow(
+            title: element.nombre,
+            snippet: element.ubicacion,
+          ),
+          position: element.cordenadas));
     });
   }
 
-  getMarkers() async {
+  getTiendas() async {
     FirebaseFirestore.instance
         .collection('tiendas')
         .get()
@@ -47,22 +100,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
           globals.id.add(doc['markerId']);
         }
       });
-
-      /*if (e.docs.isNotEmpty) {
-        for (int i = 0; i < e.docs.length; i++) {
-          t.add(e.docs[i].data()['Nombre']);
-          id.add(e.docs[i].data()['markerId']);
-        }
-      }*/
     });
-    print('Fuera');
-    print(globals.t);
-    print(globals.id);
-  }
-
-  void iniState() {
-    getMarkers();
-    super.initState();
   }
 
   @override
@@ -83,48 +121,17 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
         builder: (BuildContext context, DirectionProvider api, Widget child) {
           return GoogleMap(
             initialCameraPosition: CameraPosition(
-              target: widget.fromPoint,
+              target: LatLng(-33.491414, -70.618132),
               zoom: 12,
             ),
-            markers: Set<Marker>.of(markadores.values),
-            //polylines: api.currentRoute,
+            markers: Set.from(allMarkers),
             onMapCreated: _onMapCreated,
             myLocationEnabled: true,
             myLocationButtonEnabled: true,
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.refresh_outlined),
-        onPressed: getMarkers,
-      ),
     );
-  }
-
-  _createMarkers() {
-    var tmp = Set<Marker>();
-    tmp.add(
-      Marker(
-        markerId: MarkerId("fromPoint"),
-        position: widget.fromPoint,
-        infoWindow: InfoWindow(title: "USM"),
-      ),
-    );
-    tmp.add(
-      Marker(
-        markerId: MarkerId("toPoint"),
-        position: widget.toPoint,
-        infoWindow: InfoWindow(title: "Estadio Colo-Colo"),
-      ),
-    );
-    tmp.add(
-      Marker(
-        markerId: MarkerId("tiendita"),
-        position: widget.panaderia,
-        infoWindow: InfoWindow(title: "Panaderia Casera"),
-      ),
-    );
-    return tmp;
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -133,31 +140,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
   }
 
   _centerView() async {
-    var api = Provider.of<DirectionProvider>(context);
-
     await _mapController.getVisibleRegion();
-
-    print("buscando direcciones");
-    await api.findDirections(widget.fromPoint, widget.toPoint);
-
-    var left = min(widget.fromPoint.latitude, widget.toPoint.latitude);
-    var right = max(widget.fromPoint.latitude, widget.toPoint.latitude);
-    var top = max(widget.fromPoint.longitude, widget.toPoint.longitude);
-    var bottom = min(widget.fromPoint.longitude, widget.toPoint.longitude);
-
-    api.currentRoute.first.points.forEach((point) {
-      left = min(left, point.latitude);
-      right = max(right, point.latitude);
-      top = max(top, point.longitude);
-      bottom = min(bottom, point.longitude);
-    });
-
-    var bounds = LatLngBounds(
-      southwest: LatLng(left, bottom),
-      northeast: LatLng(right, top),
-    );
-    var cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 50);
-    _mapController.animateCamera(cameraUpdate);
   }
 }
 
@@ -176,8 +159,7 @@ class Menulateral extends StatelessWidget {
                 style: TextStyle(color: Colors.black)),
             decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: NetworkImage(
-                        "https://i.pinimg.com/736x/33/66/3a/33663afe1341595fef614dad3305d328.jpg"))),
+                    image: AssetImage('assets/imagen_pymercado.jpg'))),
           ),
           Ink(
             color: Colors.purple,
