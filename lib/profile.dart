@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pymercado_02/chat.dart';
 import 'globals.dart' as globals;
 
 class Profile extends StatefulWidget {
@@ -128,7 +129,11 @@ class ProfileState extends State<Profile> {
                               TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                         ),
                       ),
-                      onPressed: () {}),
+                      onPressed: () {
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Chat(user: globals.usuario )),
+                      );}),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 50),

@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:pymercado_02/RedirectScreen.dart';
 import 'package:pymercado_02/SignUpScreen.dart';
+import 'globals.dart' as globals;
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -178,6 +179,9 @@ class _LoginScreenState extends State<LoginScreen> {
         password: _passwordcontroller.text,
       ))
           .user;
+      globals.usuario = user;
+
+
       if (!user.emailVerified) {
         await user.sendEmailVerification();
       }

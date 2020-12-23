@@ -165,7 +165,7 @@ class CreateShopState extends State<CreateShop> {
               _buildPhoneNumber(),
               _buildDescription(),
               _buildCategory(),
-              SizedBox(height: 70),
+              SizedBox(height: 30),
               RaisedButton(
                 onPressed: () {
                   if (!_formKey.currentState.validate()) {

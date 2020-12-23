@@ -94,10 +94,11 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.refresh_outlined),
-        onPressed: getMarkers,
-      ),
+      floatingActionButton:
+        FloatingActionButton(
+              child: Icon(Icons.refresh_outlined),
+              onPressed: getMarkers,
+          ),
     );
   }
 

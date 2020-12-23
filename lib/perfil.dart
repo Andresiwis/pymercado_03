@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'globals.dart' as globals;
 
 class Perfil extends StatefulWidget {
   @override
@@ -29,8 +30,9 @@ class PerfilState extends State<Perfil> {
   }
 
   getData() {
-    DocumentReference documentReference =
-        FirebaseFirestore.instance.collection("tiendas").doc(_uid);
+    DocumentReference documentReference = FirebaseFirestore.instance
+        .collection("tiendas")
+        .doc(_uid);
     documentReference.snapshots().listen((event) {
       setState(() {
         data = event.data();
@@ -49,8 +51,8 @@ class PerfilState extends State<Perfil> {
         backgroundColor: Colors.tealAccent,
         body: SingleChildScrollView(
           child:
-              Column(crossAxisAlignment: CrossAxisAlignment.center, children: <
-                  Widget>[
+          Column(crossAxisAlignment: CrossAxisAlignment.center, children: <
+              Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
@@ -71,20 +73,35 @@ class PerfilState extends State<Perfil> {
                 Widget>[
               Text(
                 "Categoria:\n $_categoria",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
+              Padding(padding: EdgeInsets.all(6)),
               Column(
                 children: <Widget>[
-                  Text(
-                    _ubicacion ?? '',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  Row(
+                      children: <Widget>[
+                        Icon(
+                            Icons.location_on_rounded
+                        ),
+                        Text(
+                          _ubicacion ?? '',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ]
                   ),
-                  Text(
-                    _telefono ?? '',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  Row(
+                    children: [
+                      Icon(
+                          Icons.phone
+                      ),
+                      Text(
+                        _telefono ?? '',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   )
                 ],
-              )
+              ),
             ]),
             SizedBox(
               height: 40,
@@ -92,25 +109,22 @@ class PerfilState extends State<Perfil> {
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: Center(
-                    child: Text(
-                  _descripcion ?? '',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.justify,
-                ))),
-            SizedBox(
-              height: 150,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 50),
-              child: RaisedButton(
-                  child: Center(
-                    child: Text(
-                      "Chatea aquí",
-                      style:
-                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  onPressed: () {}),
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      child:
+                      Text(
+                        _descripcion ?? '',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.justify,
+                      ),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                              color: Colors.black,
+                              width: 2.5
+                          )
+                      ),
+                    ))
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -119,7 +133,7 @@ class PerfilState extends State<Perfil> {
                     child: Text(
                       "Actualizar datos",
                       style:
-                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                      TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                     ),
                   ),
                   onPressed: () {
