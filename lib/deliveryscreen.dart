@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:pymercado_02/chat.dart';
 import 'directionsprovider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pymercado_02/profile.dart';
@@ -176,6 +177,8 @@ class Menulateral extends StatelessWidget {
             child: new ListTile(
               title: Text("Chats"),
               onTap: () {
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => Chat(user: globals.usuario,)));
                 //nada
               },
             ),
