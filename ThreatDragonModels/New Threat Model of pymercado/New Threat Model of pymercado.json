@@ -1,0 +1,36 @@
+{
+  "version": "2.4.1",
+  "summary": {
+    "title": "New Threat Model of pymercado",
+    "owner": "Diego Acevedo",
+    "description": "Pymercado es una aplicación mobile diseñada para dar descubrimiento\na las pymes en una aplicación centralizada que ayude a conectar con\nlos potenciales clientes. La aplicación provee una plataforma para crear\ny administrar tiendas/pyme para visualizar sus productos en el mapa\nprincipal de la app, además de tener la funcionalidad de chat para las\ntiendas, aunque esta última esta implementada como un chat global.",
+    "id": 0
+  },
+  "detail": {
+    "contributors": [
+      {
+        "name": "Dante Aspee"
+      },
+      {
+        "name": "Diego Acevedo"
+      },
+      {
+        "name": "Andres Puelles"
+      }
+    ],
+    "diagrams": [
+      {
+        "id": 0,
+        "title": "New STRIDE diagram",
+        "diagramType": "STRIDE",
+        "placeholder": "New STRIDE diagram description",
+        "thumbnail": "./public/content/images/thumbnail.stride.jpg",
+        "version": "2.4.1",
+        "cells": []
+      }
+    ],
+    "diagramTop": 2,
+    "reviewer": "Diego Acevedo",
+    "threatTop": 0
+  }
+}
